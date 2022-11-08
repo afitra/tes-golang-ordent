@@ -10,6 +10,7 @@ type Service interface {
 	RegisterUser(input RegisterUserInput) (User, error)
 	Login(input LoginInput) (User, error)
 	GetUserByEmail(input EmailInput) (bool, error)
+	GetUserByID(id int) (User, error)
 }
 
 type service struct {
@@ -73,4 +74,18 @@ func (s *service) GetUserByEmail(input EmailInput) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+func (s *service) GetUserByID(id int) (User, error) {
+
+	user, err := s.repository.FindById(id)
+	if err != nil {
+		return user, err
+	}
+
+	if user.ID == 0 {
+
+		return user, errors.New("user not found with id")
+
+	}
+	return user, nil
 }
